@@ -48,16 +48,15 @@ ylim([-5.5 5.5])
 
 % X = [X,ones(length(d),1)];
 %Random initial weights and display them
-w = rand(length(X),1);
+w = rand(size(X,2),1);
 disp('Initial random weight vector is:');
 disp(w');
-w=rand(4,1);
+
 
 %initialise learning rate and epochs
-% lr = input('Learning rate \n');
-lr =1;
-% epochs = input('Number of max epochs \n');
-epochs = 100;
+lr = input('Learning rate \n');
+epochs = input('Number of max epochs \n');
+
 kk=0;
 
 %Training 
@@ -79,7 +78,7 @@ while(1)
         ylim([-5.5 5.5])
         hold on
         xw = -5.5:0.01:5.5;
-        yw = -(w(1)/w(2))*xw - (w(4)/w(3));
+        yw = -(w(length(w)-1)/w(length(w)))*xw - (w(length(w))/w(length(w)-1));
         scatter(xw,yw,'.');
         hold off
         drawnow
