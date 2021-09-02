@@ -25,10 +25,10 @@ for i=1:n
         end
     end
     X(i,2) = input('Data Class 1 in coord y (-5 to 5) \n');
-    if or(X(i,1)>5,X(i,1)<-5)
+    if or(X(i,2)>5,X(i,2)<-5)
         disp('Out of range')
-        while(or(X(i,1)>5,X(i,1)<-5))
-            X(i,1) = input('Data Class 1 in coord y (-5 to 5) \n');
+        while(or(X(i,2)>5,X(i,2)<-5))
+            X(i,2) = input('Data Class 1 in coord y (-5 to 5) \n');
         end
     end
     d(i) = 1;
@@ -42,10 +42,10 @@ for i=n+1:n+n
         end
     end
     X(i,2) = input('Data Class 2 in coord y (-5 to 5) \n');
-    if or(X(i,1)>5,X(i,1)<-5)
+    if or(X(i,2)>5,X(i,2)<-5)
                 disp('Out of range')
-        while(or(X(i,1)>5,X(i,1)<-5))
-            X(i,1) = input('Data Class 2 in coord y (-5 to 5) \n');
+        while(or(X(i,2)>5,X(i,2)<-5))
+            X(i,2) = input('Data Class 2 in coord y (-5 to 5) \n');
         end
     end
     d(i) = -1;
@@ -55,26 +55,18 @@ clc;
 
 figure()
 scatter(X(:,1),X(:,2),[],d,'filled')
+grid on
 xlim([-5.5 5.5])
 ylim([-5.5 5.5])
 
-% X = [X,ones(length(d),1)];
+X = [X,ones(length(d),1)];
+
 %Random initial weights and display them
-w = rand(2,1);
-% w = w';
-theta = input('Input threshold theta (-5 to 5) \n');
-    if or(theta>5,theta<-5)
-        disp('Out of range')
-        while(or(theta>5,theta<-5))
-            theta = input('Input threshold theta (-5 to 5) \n');
-        end
-    end
-% theta = rand();
+w = rand(3,1);
 disp('Initial random weight vector is:');
 disp(w');
 
-
-%initialise learning rate and epochs
+%Initialize learning rate and epochs
 lr = input('Learning rate \n');
 epochs = input('Number of max epochs \n');
 
@@ -90,17 +82,18 @@ while(1)
         o(i)=sign(net);
         err=d(i)-o(i);
         error=error+err;
+        errorplot(kk+1)= error;
         % Weight change using perceptron rule
         w=w+lr*err*x;
-        theta=theta+lr*err;
         kk=kk+1;
         
         scatter(X(:,1),X(:,2),[],d,'filled')
+        grid on
         xlim([-5.5 5.5])
         ylim([-5.5 5.5])
         hold on
         xw = -5.5:0.01:5.5;
-        yw = (w(1)/w(2))*xw + (theta/w(2));
+        yw = -(w(1)/w(2))*xw - (w(3)/w(2));
         scatter(xw,yw,'.');
         hold off
         drawnow
@@ -110,24 +103,33 @@ while(1)
         disp('Convergence')
         disp('Weight');
         disp(w');
-        disp('Theta');
-        disp(theta);
         disp('Epochs');
         disp(kk);
+        disp('Errors');
+        disp(errorplot);
         disp('Error');
         disp(error);
+        figure ()
+        bar((1:kk),errorplot)
+        title('Epochs vs Error ')
+        xlabel('Epochs')
+        ylabel('Error')
         break;
     end
     while(epochs<kk)
-        disp('No convergence')
-        disp('Weight',w);
-        disp(w);
-        disp('Theta');
-        disp(theta);
+        disp('Convergence')
+        disp('Weight');
+        disp(w');
         disp('Epochs');
         disp(kk);
+        disp('Errors');
+        disp(errorplot);
         disp('Error');
-        disp(error);
-        break;
+        disp(sum(errorplot^2));
+        figure ()
+        bar((1:kk),errorplot)
+        title('Epochs vs Error ')
+        xlabel('Epochs')
+        ylabel('Error')
     end
 end
